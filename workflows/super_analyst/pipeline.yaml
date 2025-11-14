@@ -1,0 +1,12 @@
+name: super_analyst
+steps:
+  - id: select_frameworks
+    script: framework_selector.py
+  - id: build_prompt
+    template: prompts/{framework_id}.md
+  - id: call_kimi
+    client: kimi_api
+  - id: post_process
+    handler: run.py::post_process
+
+

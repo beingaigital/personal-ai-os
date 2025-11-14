@@ -1,0 +1,8 @@
+{
+  "timezone": "Asia/Shanghai",
+  "week_start": "monday",
+  "default_frameworks": ["first_principles", "swot"],
+  "summary_sections": ["Summary", "Key Takeaways", "Something New"]
+}
+
+

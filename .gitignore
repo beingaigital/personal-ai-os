@@ -1,0 +1,150 @@
+# Personal AI OS - .gitignore
+# Version: 1.0
+
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================
+# 虚拟环境
+# ============================================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# ============================================
+# IDE 和编辑器
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# 敏感配置和密钥
+# ============================================
+# API 密钥配置文件（包含真实密钥）
+config/kimi_api.json
+config/*_api.json
+config/*_key.json
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+ENV
+ENV.local
+
+# ============================================
+# 用户数据
+# ============================================
+# 原始数据（用户自己的内容）
+data/raw/**/*
+!data/raw/.gitkeep
+
+# 提炼结果（用户生成的内容）
+data/medium-rare/**/*
+!data/medium-rare/.gitkeep
+
+# 分析报告（用户生成的内容）
+data/topic/**/*
+!data/topic/.gitkeep
+!data/topic/new-angle/.gitkeep
+
+# ============================================
+# 日志文件
+# ============================================
+logs/
+*.log
+*.log.*
+
+# ============================================
+# 临时文件和缓存
+# ============================================
+*.tmp
+*.temp
+*.cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# ============================================
+# 操作系统文件
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ============================================
+# Jupyter Notebook
+# ============================================
+.ipynb_checkpoints
+*.ipynb
+
+# ============================================
+# 备份文件
+# ============================================
+*.bak
+*.backup
+*~
+
+# ============================================
+# 测试相关
+# ============================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============================================
+# 其他
+# ============================================
+*.pid
+*.seed
+*.pid.lock
+node_modules/
+.npm
+.eslintcache

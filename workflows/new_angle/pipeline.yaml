@@ -1,0 +1,10 @@
+name: new_angle
+steps:
+  - id: build_prompt
+    template: prompts/new_angle.md
+  - id: call_kimi
+    client: kimi_api
+  - id: save_output
+    handler: run.py::run_new_angle
+
+
