@@ -1,0 +1,32 @@
+{
+  "router": {
+    "decision_engine": "llm",
+    "default_model": "kimi-k2-thinking",
+    "max_agents_per_task": 3,
+    "enable_sequential_execution": false
+  },
+  "agents": {
+    "ingest": {
+      "enabled": true,
+      "model": "kimi-latest",
+      "priority": 1,
+      "description": "摘要提炼代理，处理原始文档并生成结构化摘要"
+    },
+    "super_analyst": {
+      "enabled": true,
+      "model": "kimi-k2-thinking",
+      "priority": 2,
+      "description": "深度分析代理，使用多种分析框架进行结构化深度分析"
+    },
+    "new_angle": {
+      "enabled": true,
+      "model": "kimi-k2-thinking",
+      "priority": 3,
+      "description": "广度思考代理，提供多维度视角和跨领域洞察"
+    }
+  }
+}
+
+
+
+

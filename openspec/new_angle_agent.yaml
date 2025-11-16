@@ -1,0 +1,99 @@
+# OpenSpec: New Angle Agent (广度思考代理)
+# Version: 1.0.0
+# Description: 提供多维度视角和跨领域洞察
+
+name: new_angle_agent
+version: "1.0.0"
+type: subagent
+parent_router: agent_router
+
+description: |
+  广度思考代理，通过四步流程（盲点分析、视角切换、跨领域类比、创新洞察）
+  提供多维度视角和跨领域洞察，帮助发现新的思考角度。
+
+capabilities:
+  - blind_spot_detection:
+      description: 识别当前分析中的盲点和遗漏
+  - perspective_switching:
+      description: 从不同角度重新审视问题
+  - cross_domain_analogy:
+      description: 跨领域类比和借鉴
+  - innovation_insights:
+      description: 生成创新性洞察和预测
+
+input_schema:
+  type: object
+  properties:
+    context:
+      type: string
+      description: 上下文文本或分析结果
+    input_file:
+      type: string
+      format: path
+      description: 可选，从文件读取上下文
+    focus_areas:
+      type: array
+      items:
+        type: string
+      description: 可选，指定重点关注的领域
+  required:
+    - context
+
+output_schema:
+  type: object
+  properties:
+    output_path:
+      type: string
+      format: path
+    insights:
+      type: object
+      properties:
+        blind_spots:
+          type: string
+        perspectives:
+          type: string
+        analogies:
+          type: string
+        innovations:
+          type: string
+    execution_time:
+      type: number
+
+implementation:
+  agent_class: "agents.new_angle.NewAngleAgent"
+  runner_class: "workflows.new_angle.run"
+  client_class: "scripts.kimi_client.KimiClient"
+  config:
+    model: "kimi-k2-thinking"
+    temperature: 0.7
+    max_tokens: 4096
+
+workflow:
+  steps:
+    - id: load_context
+      action: load_context_text
+      sources: [context, input_file]
+    - id: load_prompt
+      action: load_new_angle_prompt
+      template: workflows/new_angle/prompts/new_angle.md
+    - id: execute_analysis
+      action: run_new_angle_workflow
+      steps:
+        - blind_spot_analysis
+        - perspective_switching
+        - cross_domain_analogy
+        - innovation_insights
+    - id: write_output
+      action: write_insights_file
+
+error_handling:
+  - error_type: empty_context
+    action: raise_error
+    message: "上下文内容不能为空"
+  - error_type: api_error
+    action: retry
+    max_retries: 3
+    retry_delay: 2.0
+
+
+

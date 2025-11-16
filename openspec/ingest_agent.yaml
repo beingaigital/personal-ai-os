@@ -1,0 +1,97 @@
+# OpenSpec: Ingest Agent (摘要提炼代理)
+# Version: 1.0.0
+# Description: 负责处理原始文档并生成结构化摘要
+
+name: ingest_agent
+version: "1.0.0"
+type: subagent
+parent_router: agent_router
+
+description: |
+  摘要提炼代理，负责从原始文档（Markdown、PDF、Word、TXT）中提取关键信息，
+  生成包含 Summary、Key Takeaways 和 Something New 的结构化摘要文档。
+
+capabilities:
+  - document_reading:
+      formats: [markdown, pdf, docx, txt]
+      batch_processing: true
+      concurrent_reading: true
+  - content_summarization:
+      sections:
+        - summary
+        - key_takeaways
+        - something_new
+  - file_management:
+      input_location: data/raw/YYYY-MM-DD/
+      output_location: data/medium-rare/
+
+input_schema:
+  type: object
+  properties:
+    week_path:
+      type: string
+      description: 周目录路径（data/raw/YYYY-MM-DD/）
+      format: path
+    files:
+      type: array
+      items:
+        type: object
+        properties:
+          path: string
+          name: string
+          type: string
+      description: 可选，直接指定文件列表
+    model_override:
+      type: string
+      default: "kimi-latest"
+      description: 覆盖默认模型配置
+  required:
+    - week_path
+
+output_schema:
+  type: object
+  properties:
+    output_path:
+      type: string
+      format: path
+    summary_content:
+      type: string
+    file_count:
+      type: integer
+    processing_time:
+      type: number
+
+implementation:
+  agent_class: "agents.ingest.IngestAgent"
+  processor_class: "scripts.content_processor"
+  client_class: "scripts.kimi_client.KimiClient"
+  config:
+    model: "kimi-latest"
+    temperature: 0.7
+    max_tokens: 4096
+
+workflow:
+  steps:
+    - id: validate_input
+      action: validate_week_folder
+    - id: read_documents
+      action: read_documents
+      concurrent: true
+    - id: build_prompt
+      action: build_summary_prompt
+    - id: call_llm
+      action: summarize_with_llm
+    - id: write_output
+      action: write_summary_output
+
+error_handling:
+  - error_type: no_documents_found
+    action: raise_error
+    message: "指定目录中未找到支持的文档"
+  - error_type: api_error
+    action: retry
+    max_retries: 3
+    retry_delay: 2.0
+
+
+

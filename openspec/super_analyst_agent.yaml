@@ -1,0 +1,120 @@
+# OpenSpec: Super Analyst Agent (深度分析代理)
+# Version: 1.0.0
+# Description: 使用多种分析框架进行结构化深度分析
+
+name: super_analyst_agent
+version: "1.0.0"
+type: subagent
+parent_router: agent_router
+
+description: |
+  深度分析代理，使用12种分析框架（First Principles, 5 Whys, SWOT, MECE等）
+  对问题进行结构化深度分析。智能框架选择器会根据问题特征自动推荐最适合的分析框架。
+
+capabilities:
+  - framework_selection:
+      available_frameworks:
+        - first_principles
+        - five_whys
+        - swot
+        - mece
+        - five_forces
+        - cost_benefit
+        - design_thinking
+        - hypothesis_driven
+        - pareto
+        - scenario_planning
+        - socratic
+        - systems_thinking
+      selection_method: keyword_matching + scoring
+      top_n: 3
+  - structured_analysis:
+      output_format: markdown
+      sections: dynamic
+  - report_generation:
+      template: workflows/super_analyst/prompts/{framework}.md
+      output_location: data/topic/
+
+input_schema:
+  type: object
+  properties:
+    topic:
+      type: string
+      description: 分析报告的主题名称
+      required: true
+    question:
+      type: string
+      description: 用户问题或问题陈述
+      required: true
+    framework_hint:
+      type: array
+      items:
+        type: string
+      description: 可选，指定要使用的框架ID列表
+    max_frameworks:
+      type: integer
+      default: 3
+      description: 最多使用的框架数量
+  required:
+    - topic
+    - question
+
+output_schema:
+  type: object
+  properties:
+    output_path:
+      type: string
+      format: path
+    report_content:
+      type: string
+    frameworks_used:
+      type: array
+      items:
+        type: string
+    analysis_sections:
+      type: array
+      items:
+        type: object
+        properties:
+          framework: string
+          content: string
+    execution_time:
+      type: number
+
+implementation:
+  agent_class: "agents.super_analyst.SuperAnalystAgent"
+  selector_class: "workflows.super_analyst.framework_selector"
+  runner_class: "workflows.super_analyst.run"
+  client_class: "scripts.kimi_client.KimiClient"
+  config:
+    model: "kimi-k2-thinking"
+    temperature: 0.7
+    max_tokens: 4096
+
+workflow:
+  steps:
+    - id: select_frameworks
+      action: recommend_frameworks
+      input: question
+    - id: load_prompts
+      action: load_prompt_templates
+      frameworks: selected_frameworks
+    - id: execute_analysis
+      action: run_framework_analysis
+      loop: frameworks
+    - id: assemble_report
+      action: assemble_analysis_report
+    - id: write_output
+      action: write_report_file
+
+error_handling:
+  - error_type: no_frameworks_selected
+    action: use_default_frameworks
+    default: [first_principles, swot]
+  - error_type: api_error
+    action: retry
+    max_retries: 3
+    retry_delay: 2.0
+
+
+

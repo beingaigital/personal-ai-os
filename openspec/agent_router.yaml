@@ -1,0 +1,116 @@
+# OpenSpec: Personal AI OS - Agent Router Specification
+# Version: 1.0.0
+# Description: 主路由器，负责接收用户请求并智能路由到相应的子代理
+
+name: agent_router
+version: "1.0.0"
+type: router
+description: |
+  个人AI OS的主路由器，负责分析用户请求并智能选择最合适的子代理执行任务。
+  支持单代理执行、多代理协作和代理链式调用。
+
+capabilities:
+  - task_analysis
+  - agent_selection
+  - multi_agent_orchestration
+  - result_aggregation
+
+subagents:
+  - name: ingest_agent
+    id: ingest
+    description: 摘要提炼代理，负责处理原始文档并生成结构化摘要
+    capabilities:
+      - document_summarization
+      - content_extraction
+      - multi_format_support
+    
+  - name: super_analyst_agent
+    id: super_analyst
+    description: 深度分析代理，使用多种分析框架进行结构化深度分析
+    capabilities:
+      - framework_analysis
+      - strategic_thinking
+      - problem_decomposition
+    
+  - name: new_angle_agent
+    id: new_angle
+    description: 广度思考代理，提供多维度视角和跨领域洞察
+    capabilities:
+      - perspective_switching
+      - blind_spot_detection
+      - cross_domain_analogy
+      - innovation_insights
+
+routing_strategy:
+  method: llm_based
+  decision_criteria:
+    - task_type
+    - input_format
+    - complexity
+    - user_intent
+    - required_capabilities
+
+input_schema:
+  type: object
+  properties:
+    task:
+      type: string
+      description: 用户任务描述或问题
+    input_data:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [file_path, text, question, context]
+        value:
+          type: string
+        metadata:
+          type: object
+    preferences:
+      type: object
+      properties:
+        agent_hint:
+          type: string
+          enum: [ingest, super_analyst, new_angle, auto]
+        max_agents:
+          type: integer
+          default: 1
+        sequential:
+          type: boolean
+          default: false
+  required:
+    - task
+
+output_schema:
+  type: object
+  properties:
+    selected_agents:
+      type: array
+      items:
+        type: string
+    execution_plan:
+      type: array
+      items:
+        type: object
+        properties:
+          agent_id: string
+          order: integer
+          input: object
+    results:
+      type: array
+      items:
+        type: object
+        properties:
+          agent_id: string
+          output: object
+          execution_time: number
+    aggregated_result:
+      type: object
+
+implementation:
+  router_class: "agents.router.AgentRouter"
+  decision_engine: "agents.router.LLMRouter"
+  config_path: "config/router_config.json"
+
+
+

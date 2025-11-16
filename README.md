@@ -32,14 +32,57 @@ export KIMI_API_KEY="你的 Kimi API Key"
 
 所有命令均在项目根目录执行：
 
-- 摘要提炼（自动生成当周 `medium-rare/周文档.md`）
+#### 2.1 周文件夹管理（推荐工作流）
+
+- **获取/创建当前周文件夹**（以周一为基准）
 ```bash
+# 创建当前周文件夹并显示路径
+python -m scripts.cli week-folder
+
+# 查看当前周文件夹详细信息
+python -m scripts.cli week-folder --info
+
+# 列出所有周文件夹
+python -m scripts.cli week-folder --list
+```
+
+**使用流程**：
+1. 运行 `python -m scripts.cli week-folder` 获取当前周文件夹路径
+2. 将平时搜集的重要文档放入该文件夹
+3. 运行 `python -m scripts.cli ingest` 进行自动摘要处理
+
+#### 2.2 摘要提炼
+
+- **摘要提炼**（自动生成当周 `medium-rare/周文档.md`）
+```bash
+# 自动使用当前周文件夹（推荐）
 python -m scripts.cli ingest
+
 # 或指定周目录
 python -m scripts.cli ingest --week-path "/绝对路径/data/raw/2025-01-06"
 ```
 
-- 深度分析（Super Analyst 工作流）
+#### 2.3 Agent Router（智能路由）
+
+- **使用智能路由自动选择合适的Agent**
+```bash
+# 智能路由到合适的Agent（推荐）
+python -m scripts.cli router \
+  --task "总结这周收集的文档" \
+  --input-type file_path \
+  --input-value "data/raw/2025-11-10"
+
+# 指定使用Ingest Agent
+python -m scripts.cli router \
+  --task "处理文档并生成摘要" \
+  --input-type file_path \
+  --input-value "data/raw/2025-11-10" \
+  --agent-hint ingest
+```
+
+#### 2.4 其他功能
+
+- **深度分析**（Super Analyst 工作流）
 ```bash
 python -m scripts.cli super-analyst \
   --topic "特斯拉Robotaxi分析报告" \
@@ -47,7 +90,7 @@ python -m scripts.cli super-analyst \
 # 输出：data/topic/特斯拉Robotaxi分析报告.md
 ```
 
-- 广度思考（New Angle 工作流）
+- **广度思考**（New Angle 工作流）
 ```bash
 # 传入上下文文件
 python -m scripts.cli new-angle --input "/绝对路径/context.md"
